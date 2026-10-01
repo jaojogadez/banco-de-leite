@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #b88628;
+    --primary-light: #c29a3d;
+    --primary-bg-subtle: #fcf9f2;
+    --secondary-color: #968172;
+    --tertiary-color: #3b948d;
+    --tertiary-light: #eef8f7;
+    --tertiary-border: #bce5e0;
+    --quaternary-color: #1a1310;
+    
+    --sidebar-bg: #1c1512;
+    --sidebar-active-bg: rgba(71, 181, 172, 0.12);
+    --sidebar-text: #8c786c;
+    --sidebar-text-hover: #bda698;
+    --sidebar-active-text: #47b5ac;
+    
+    --border-color: #ede5db;
+    --border-subtle: #f4eee6;
+    --card-bg: #ffffff;
+    --main-bg: #ffffff;
+    --text-main: #1f1815;
+    --text-muted: #8c786c;
+    
+    --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    font-family: var(--font);
+    background-color: var(--sidebar-bg);
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button, a {
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}

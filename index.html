@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLHM - Sistema de Controle | Banco de Leite Humano</title>
+    <link rel="stylesheet" href="src/styles/index.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Overlay escuro para Mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+        <!-- Sidebar Esquerda -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand-section">
+                <div class="brand-wrapper">
+                    <div class="brand-logo" title="BLHM">
+                        <!-- Ícone de gota BLHM -->
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <div class="brand-title-wrap">
+                            <span class="brand-title">BLHM</span>
+                            <span class="brand-dot"></span>
+                        </div>
+                        <span class="brand-subtitle">SISTEMA DE CONTROLE</span>
+                    </div>
+                </div>
+
+                <!-- Botão de Fechar no Mobile -->
+                <button class="sidebar-action-btn sidebar-close-btn" id="sidebarCloseBtn" aria-label="Fechar Menu" title="Fechar Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+
+                <!-- Botão de Recolher no Desktop -->
+                <button class="sidebar-action-btn" id="collapseDesktopBtn" aria-label="Recolher Menu" title="Recolher Sidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Menu de Navegação -->
+            <nav class="sidebar-nav">
+                <a href="#home" class="nav-link active" title="Home">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="#doadoras" class="nav-link" title="Doadoras">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M6 20v-2a6 6 0 0 1 12 0v2"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Doadoras</span>
+                </a>
+                <a href="#coletas" class="nav-link" title="Coletas">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 3h6"></path>
+                            <path d="M10 3v5.5a2.5 2.5 0 0 1-.5 1.5l-4 6a3 3 0 0 0 2.5 4.5h8a3 3 0 0 0 2.5-4.5l-4-6a2.5 2.5 0 0 1-.5-1.5V3"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Coletas</span>
+                </a>
+                <a href="#processamento" class="nav-link" title="Processamento">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="13" x2="15" y2="13"></line>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Processamento</span>
+                </a>
+                <a href="#distribuicao" class="nav-link" title="Distribuição">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="5" width="14" height="12" rx="2"></rect>
+                            <path d="M15 9h4l3 3v5h-7V9z"></path>
+                            <circle cx="5.5" cy="18.5" r="1.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="1.5"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Distribuição</span>
+                </a>
+                <a href="#rastreabilidade" class="nav-link" title="Rastreabilidade">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Rastreabilidade</span>
+                </a>
+            </nav>
+
+            <!-- Rodapé Conexão -->
+            <div class="sidebar-footer">
+                <div class="connection-badge">
+                    <span class="connection-dot"></span>
+                    <span class="connection-text">Conectado com Sucesso</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-wrapper">
+            <!-- Cabeçalho -->
+            <header class="dashboard-header">
+                <div class="header-left-group">
+                    <!-- Botão Toggle Hamburger (Mobile) -->
+                    <button class="menu-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir Menu Lateral" title="Abrir Menu">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="header-titles">
+                        <h1 class="main-heading">Nome do projeto / Banco de Leite humano</h1>
+                        <p class="sub-heading">Visão geral das atividades do Banco de Leite</p>
+                    </div>
+                </div>
+
+                <div class="header-status">
+                    <div class="status-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                        </svg>
+                        <span>Posto de Coleta Ativo</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Alerta Pendências -->
+            <div class="alert-banner">
+                <div class="alert-content">
+                    <span class="alert-icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </span>
+                    <p>
+                        <span class="alert-strong">Pendências:</span> <span class="alert-highlight">3 registros</span> precisam de ação imediata para manter a conformidade do lote.
+                    </p>
+                </div>
+                <a href="#resolver" class="alert-action">Resolver agora</a>
+            </div>
+
+            <!-- Cards de Métricas -->
+            <section class="metrics-grid">
+                <!-- Coletas -->
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-title">Coletas</span>
+                        <div class="metric-icon-box amber">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 3h6"></path>
+                                <path d="M10 3v13a2 2 0 0 0 4 0V3"></path>
+                                <line x1="10" y1="8" x2="14" y2="8"></line>
+                                <line x1="10" y1="12" x2="13" y2="12"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-number">24</div>
+                </div>
+
+                <!-- Processamento -->
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-title">Processamento</span>
+                        <div class="metric-icon-box amber">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 3h8"></path>
+                                <path d="M7 7h10"></path>
+                                <path d="M7 7l2 14h6l2-14"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-number">12</div>
+                </div>
+
+                <!-- Distribuições -->
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-title">Distribuições</span>
+                        <div class="metric-icon-box amber">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="6" width="13" height="11" rx="2"></rect>
+                                <path d="M14 9h4l3 3v5h-7V9z"></path>
+                                <circle cx="5" cy="18" r="1.5"></circle>
+                                <circle cx="18" cy="18" r="1.5"></circle>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-number">8</div>
+                </div>
+
+                <!-- Pendências -->
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-title">Pendências</span>
+                        <div class="metric-icon-box teal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-number highlight-amber">3</div>
+                </div>
+            </section>
+
+            <!-- Tabela de Atividades Recentes -->
+            <section class="activities-section">
+                <h2 class="section-title">Atividades recentes</h2>
+                <div class="activities-table-card">
+                    <table class="activities-table">
+                        <thead>
+                            <tr>
+                                <th>Atividade</th>
+                                <th>Identificação</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="activity-cell">
+                                        <span class="activity-bullet"></span>
+                                        <span>Coleta registrada</span>
+                                    </div>
+                                </td>
+                                <td>Registro C-001</td>
+                                <td>Hoje, 16:00</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="activity-cell">
+                                        <span class="activity-bullet"></span>
+                                        <span>Processamento atualizado</span>
+                                    </div>
+                                </td>
+                                <td>Lote L-001</td>
+                                <td>Hoje, 14:30</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="activity-cell">
+                                        <span class="activity-bullet"></span>
+                                        <span>Doadora cadastrada</span>
+                                    </div>
+                                </td>
+                                <td>Cadastro C - 075</td>
+                                <td>Hoje, 10:15</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="activity-cell">
+                                        <span class="activity-bullet"></span>
+                                        <span>Distribuição registrada</span>
+                                    </div>
+                                </td>
+                                <td>Registro D-001</td>
+                                <td>Hoje, 9:30</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="activity-cell">
+                                        <span class="activity-bullet"></span>
+                                        <span>Distribuição concluída</span>
+                                    </div>
+                                </td>
+                                <td>Registro D-023</td>
+                                <td>Ontem, 16:00</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="activity-cell">
+                                        <span class="activity-bullet"></span>
+                                        <span>Distribuição iniciada</span>
+                                    </div>
+                                </td>
+                                <td>Registro D-015</td>
+                                <td>Ontem, 15:00</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="activity-cell">
+                                        <span class="activity-bullet"></span>
+                                        <span>Doadora cadastrada</span>
+                                    </div>
+                                </td>
+                                <td>Cadastro C-074</td>
+                                <td>Ontem, 12:30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script de controle da Sidebar e Interatividades -->
+    <script src="src/scripts/sidebar.js"></script>
+</body>
+</html>
