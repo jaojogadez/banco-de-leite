@@ -4,18 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.getElementById('sidebarCloseBtn');
     const collapseDesktopBtn = document.getElementById('collapseDesktopBtn');
     const overlay = document.getElementById('sidebarOverlay');
-    const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
-    const pageHeading = document.querySelector('.header-titles .main-heading');
-
-    // Mapeamento de títulos para os links (sem criar novas páginas)
-    const sectionTitles = {
-        '#home': 'Nome do projeto / Banco de Leite humano',
-        '#doadoras': 'Gestão de Doadoras / Banco de Leite',
-        '#coletas': 'Controle de Coletas / Banco de Leite',
-        '#processamento': 'Processamento de Leite / Lotes',
-        '#distribuicao': 'Distribuição e Entregas / Banco de Leite',
-        '#rastreabilidade': 'Rastreabilidade e Conformidade'
-    };
 
     // Função para abrir a sidebar (mobile / telas pequenas)
     function openSidebar() {
@@ -65,28 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape' && sidebar.classList.contains('open')) {
             closeSidebar();
         }
-    });
-
-    // Alternar item ativo e interatividade sem sair da página
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetHash = link.getAttribute('href');
-
-            // Remover active de todos e adicionar ao clicado
-            navLinks.forEach(item => item.classList.remove('active'));
-            link.classList.add('active');
-
-            // Atualiza dinamicamente o título caso exista mapeamento
-            if (pageHeading && sectionTitles[targetHash]) {
-                pageHeading.textContent = sectionTitles[targetHash];
-            }
-
-            // Fecha a sidebar no mobile após selecionar um item
-            if (window.innerWidth <= 768) {
-                closeSidebar();
-            }
-        });
     });
 
     // Ajuste suave caso a janela seja redimensionada

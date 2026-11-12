@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doadoras | BLHM Care</title>
+    <link rel="stylesheet" href="../src/styles/index.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Overlay escuro para Mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+        <!-- Sidebar Esquerda -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand-section">
+                <div class="brand-wrapper">
+                    <div class="brand-logo" title="BLHM">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <div class="brand-title-wrap">
+                            <span class="brand-title">BLHM</span>
+                            <span class="brand-dot"></span>
+                        </div>
+                        <span class="brand-subtitle">SISTEMA DE CONTROLE</span>
+                    </div>
+                </div>
+
+                <!-- Botão de Fechar no Mobile -->
+                <button class="sidebar-action-btn sidebar-close-btn" id="sidebarCloseBtn" aria-label="Fechar Menu" title="Fechar Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+
+                <!-- Botão de Recolher no Desktop -->
+                <button class="sidebar-action-btn" id="collapseDesktopBtn" aria-label="Recolher Menu" title="Recolher Sidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Menu de Navegação -->
+            <nav class="sidebar-nav">
+                <a href="../index.html" class="nav-link" title="Home">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="doadoras.html" class="nav-link active" title="Doadoras">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M6 20v-2a6 6 0 0 1 12 0v2"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Doadoras</span>
+                </a>
+                <a href="coletas.html" class="nav-link" title="Coletas">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 3h6"></path>
+                            <path d="M10 3v5.5a2.5 2.5 0 0 1-.5 1.5l-4 6a3 3 0 0 0 2.5 4.5h8a3 3 0 0 0 2.5-4.5l-4-6a2.5 2.5 0 0 1-.5-1.5V3"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Coletas</span>
+                </a>
+                <a href="processamento.html" class="nav-link" title="Processamento">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="13" x2="15" y2="13"></line>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Processamento</span>
+                </a>
+                <a href="distribuicao.html" class="nav-link" title="Distribuição">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="5" width="14" height="12" rx="2"></rect>
+                            <path d="M15 9h4l3 3v5h-7V9z"></path>
+                            <circle cx="5.5" cy="18.5" r="1.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="1.5"></circle>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Distribuição</span>
+                </a>
+                <a href="rastreabilidade.html" class="nav-link" title="Rastreabilidade">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Rastreabilidade</span>
+                </a>
+            </nav>
+
+            <!-- Rodapé Conexão -->
+            <div class="sidebar-footer">
+                <div class="connection-badge">
+                    <span class="connection-dot"></span>
+                    <span class="connection-text">Conectado com Sucesso</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-wrapper">
+            <header class="dashboard-header">
+                <div class="header-left-group">
+                    <button class="menu-toggle-btn" id="sidebarToggleBtn" aria-label="Abrir Menu Lateral" title="Abrir Menu">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="header-titles">
+                        <h1 class="main-heading page-title">Doadoras</h1>
+                        <p class="sub-heading">Cadastro de novas doadoras</p>
+                    </div>
+                </div>
+                <div class="header-status">
+                    <div class="status-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+                        </svg>
+                        <span>Posto de Coleta Ativo</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ESTADO 1: cards + botão -->
+            <section class="stats-row" id="statsRow">
+                <div class="stat-card">
+                    <div>
+                        <span class="stat-label">Doadoras editadas</span>
+                        <strong class="stat-value" id="statEditadas">0</strong>
+                    </div>
+                    <span class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8"></path><path d="M7 7h10"></path><path d="M7 7l2 14h6l2-14"></path></svg>
+                    </span>
+                </div>
+                <div class="stat-card">
+                    <div>
+                        <span class="stat-label">Total de doadoras</span>
+                        <strong class="stat-value" id="statTotal">0</strong>
+                    </div>
+                    <span class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8"></path><path d="M7 7h10"></path><path d="M7 7l2 14h6l2-14"></path></svg>
+                    </span>
+                </div>
+                <button class="btn-outline-teal" id="btnNovaDoadora" type="button">+ Cadastrar doadoras</button>
+            </section>
+
+            <!-- ESTADO 2: formulário (cadastro / edição) -->
+            <section class="donor-form-card" id="formCard" hidden>
+                <h2 class="form-title" id="formTitle">Cadastrar doadora</h2>
+                <form id="donorForm" novalidate>
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="inputNome">Nome</label>
+                            <input type="text" id="inputNome" placeholder="Nome da doadora" autocomplete="off" required>
+                            <small class="field-error" id="erroNome"></small>
+                        </div>
+                        <div class="form-field">
+                            <label for="inputCpf">CPF</label>
+                            <input type="text" id="inputCpf" placeholder="CPF da doadora" inputmode="numeric" maxlength="14" autocomplete="off" required>
+                            <small class="field-error" id="erroCpf"></small>
+                        </div>
+                        <div class="form-field">
+                            <label for="inputTelefone">Telefone</label>
+                            <input type="text" id="inputTelefone" placeholder="Telefone da doadora" inputmode="tel" maxlength="15" autocomplete="off" required>
+                            <small class="field-error" id="erroTelefone"></small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-ghost" id="btnCancelarForm">Cancelar</button>
+                            <button type="submit" class="btn-teal" id="btnSubmit">CADASTRAR +</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Tabela -->
+            <section class="activities-section">
+                <h2 class="section-title">Doadoras cadastradas</h2>
+                <div class="activities-table-card">
+                    <table class="activities-table donors-table">
+                        <thead>
+                            <tr>
+                                <th>Nomes</th>
+                                <th>CPF</th>
+                                <th>Telefone</th>
+                                <th>Data</th>
+                                <th><span class="sr-only">Ações</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="donorsBody"></tbody>
+                    </table>
+                    <p class="empty-state" id="emptyState" hidden>Nenhuma doadora cadastrada ainda.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal de exclusão -->
+    <div class="modal-backdrop" id="deleteModal" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+            <p class="modal-text" id="deleteTitle">Tem certeza que deseja excluir<br>esse usuário?</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDelete">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" id="btnConfirmDelete">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/scripts/sidebar.js"></script>
+    <script src="../src/scripts/doadoras.js"></script>
+</body>
+</html>
