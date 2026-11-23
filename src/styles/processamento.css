@@ -1,0 +1,83 @@
+/* ---------- Estado vazio ---------- */
+.proc-empty {
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 500;
+    color: #e6dfd8;
+}
+.proc-empty[hidden] { display: none; }
+
+/* ---------- Tabela ---------- */
+.proc-table { min-width: 820px; }
+
+.proc-table td:first-child,
+.proc-table thead th:first-child { padding-left: 24px; }
+.proc-table td:first-child { font-weight: 700; color: var(--text-main); }
+
+.proc-table td:nth-child(2) {
+    padding-left: 22px;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+.proc-table thead th:nth-child(2) { padding-left: 22px; }
+
+.proc-table td:nth-child(3) { font-weight: 700; color: #211915; }
+.proc-table td:nth-child(6) { color: var(--secondary-color); font-weight: 500; }
+
+.proc-table td:last-child,
+.proc-table thead th:last-child {
+    text-align: center;
+    padding-right: 22px;
+}
+.proc-table .row-actions { justify-content: center; }
+
+/* ---------- Barra de progresso por etapas ---------- */
+.steps { display: inline-flex; gap: 4px; vertical-align: middle; }
+.step {
+    width: 22px;
+    height: 6px;
+    border-radius: 3px;
+    background: #efe7dd;
+}
+.step.done { background: #47b5ac; }
+.step-count {
+    margin-left: 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    vertical-align: middle;
+}
+
+.icon-btn:disabled { opacity: 0.35; cursor: default; }
+.icon-btn:disabled:hover { background: transparent; color: #9d897c; }
+
+/* ---------- Modal compacto (centralizado, como no Figma) ---------- */
+.form-modal--sm {
+    max-width: 420px;
+    overflow: visible; /* o dropdown pode passar por cima do rodapé */
+}
+.form-modal--sm .form-modal-header {
+    justify-content: center;
+    border-bottom: 0;
+    padding: 26px 22px 8px;
+}
+.form-modal--sm .form-modal-title { flex: none; font-size: 16px; }
+.form-modal--sm .form-modal-body {
+    overflow: visible;
+    padding: 12px 26px 14px;
+}
+.form-modal--sm .m-label { font-size: 11.5px; margin-bottom: 8px; }
+.form-modal--sm .form-modal-footer {
+    justify-content: center;
+    border-top: 0;
+    padding: 10px 22px 26px;
+}
+
+@media (max-width: 768px) {
+    .proc-empty { font-size: 18px; min-height: 240px; }
+}
