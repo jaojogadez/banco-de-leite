@@ -137,7 +137,8 @@
                 </div>
             </header>
 
-            <!-- Cards + botão -->
+            <!-- ===== VISÃO: LISTA ===== -->
+            <div id="listView">
             <section class="stats-row">
                 <div class="stat-card">
                     <div>
@@ -172,12 +173,10 @@
                     <table class="activities-table proc-table">
                         <thead>
                             <tr>
-                                <th>Lote</th>
-                                <th>Coleta</th>
+                                <th>Código</th>
                                 <th>Doadora</th>
-                                <th>Etapa atual</th>
-                                <th>Progresso</th>
-                                <th>Início</th>
+                                <th>Etapa</th>
+                                <th>Classificação</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -185,6 +184,10 @@
                     </table>
                 </div>
             </section>
+            </div>
+
+            <!-- ===== VISÃO: ANDAMENTO DO LOTE (preenchida via JS) ===== -->
+            <section id="detailView" hidden></section>
         </main>
     </div>
 
@@ -229,8 +232,18 @@
         </div>
     </div>
 
+    <!-- Modal de exclusão -->
+    <div class="modal-backdrop" id="deleteModal" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+            <p class="modal-text" id="deleteTitle">Tem certeza que deseja excluir<br>esse processamento?</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDelete">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" id="btnConfirmDelete">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../src/scripts/sidebar.js"></script>
-    <script src="../src/scripts/utils/select.js"></script>
     <script src="../src/scripts/processamento.js"></script>
 </body>
 </html>

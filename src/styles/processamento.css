@@ -1,3 +1,6 @@
+/* Processamento — reutiliza badges, select e botões de coletas.css e os modais de modal.css */
+#listView[hidden], #detailView[hidden] { display: none; }
+
 /* ---------- Estado vazio ---------- */
 .proc-empty {
     min-height: 360px;
@@ -13,71 +16,101 @@
 .proc-empty[hidden] { display: none; }
 
 /* ---------- Tabela ---------- */
-.proc-table { min-width: 820px; }
-
+.proc-table { min-width: 680px; }
 .proc-table td:first-child,
 .proc-table thead th:first-child { padding-left: 24px; }
 .proc-table td:first-child { font-weight: 700; color: var(--text-main); }
 
-.proc-table td:nth-child(2) {
-    padding-left: 22px;
-    font-weight: 600;
-    color: var(--secondary-color);
-}
+.proc-table td:nth-child(2) { padding-left: 22px; font-weight: 700; color: #211915; }
 .proc-table thead th:nth-child(2) { padding-left: 22px; }
-
-.proc-table td:nth-child(3) { font-weight: 700; color: #211915; }
-.proc-table td:nth-child(6) { color: var(--secondary-color); font-weight: 500; }
+.proc-table td:nth-child(3) { color: var(--secondary-color); font-weight: 500; }
 
 .proc-table td:last-child,
-.proc-table thead th:last-child {
-    text-align: center;
-    padding-right: 22px;
-}
-.proc-table .row-actions { justify-content: center; }
+.proc-table thead th:last-child { text-align: left; padding-right: 22px; color: inherit; }
+.proc-table thead th:last-child { color: #9d897c; }
 
-/* ---------- Barra de progresso por etapas ---------- */
-.steps { display: inline-flex; gap: 4px; vertical-align: middle; }
-.step {
-    width: 22px;
-    height: 6px;
-    border-radius: 3px;
-    background: #efe7dd;
-}
-.step.done { background: #47b5ac; }
-.step-count {
-    margin-left: 8px;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--secondary-color);
-    vertical-align: middle;
-}
-
-.icon-btn:disabled { opacity: 0.35; cursor: default; }
-.icon-btn:disabled:hover { background: transparent; color: #9d897c; }
-
-/* ---------- Modal compacto (centralizado, como no Figma) ---------- */
-.form-modal--sm {
-    max-width: 420px;
-    overflow: visible; /* o dropdown pode passar por cima do rodapé */
-}
-.form-modal--sm .form-modal-header {
-    justify-content: center;
-    border-bottom: 0;
-    padding: 26px 22px 8px;
-}
+/* ---------- Modal compacto de cadastro ---------- */
+.form-modal--sm { max-width: 420px; overflow: visible; }
+.form-modal--sm .form-modal-header { justify-content: center; border-bottom: 0; padding: 26px 22px 8px; }
 .form-modal--sm .form-modal-title { flex: none; font-size: 16px; }
-.form-modal--sm .form-modal-body {
-    overflow: visible;
-    padding: 12px 26px 14px;
-}
-.form-modal--sm .m-label { font-size: 11.5px; margin-bottom: 8px; }
-.form-modal--sm .form-modal-footer {
-    justify-content: center;
-    border-top: 0;
-    padding: 10px 22px 26px;
+.form-modal--sm .form-modal-body { overflow: visible; padding: 12px 26px 14px; }
+.form-modal--sm .m-label { font-size: 11.5px; margin-bottom: 8px; text-align: center; }
+.form-modal--sm .form-modal-footer { justify-content: center; border-top: 0; padding: 10px 22px 26px; }
+
+/* ---------- Andamento do lote ---------- */
+.detail-back { margin: -6px 0 14px; padding-left: 0; }
+
+.andamento {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    align-items: start;
 }
 
+.lote-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px 22px 24px;
+}
+.lote-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.lote-icon {
+    width: 46px; height: 46px; flex-shrink: 0;
+    border-radius: 10px;
+    background: #fef3dc;
+    color: var(--primary-color);
+    display: flex; align-items: center; justify-content: center;
+}
+.lote-icon svg { width: 22px; height: 22px; }
+.lote-label { display: block; font-size: 11px; font-weight: 600; color: var(--secondary-color); }
+.lote-code { display: block; font-size: 20px; font-weight: 800; color: var(--text-main); }
+
+.lote-data { margin-top: 16px; padding-top: 4px; border-top: 1px solid var(--border-subtle); }
+.lote-data dt { margin-top: 14px; font-size: 11px; font-weight: 600; color: var(--secondary-color); }
+.lote-data dd { margin-top: 3px; font-size: 16px; font-weight: 800; color: var(--text-main); }
+
+.etapas { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.etapa-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+.etapa-item.current { border-color: #e3c27d; background: #fffdf7; }
+
+.etapa-icon {
+    width: 30px; height: 30px; flex-shrink: 0;
+    border-radius: 50%;
+    background: #f4eee6;
+    color: #9d897c;
+    display: flex; align-items: center; justify-content: center;
+}
+.etapa-icon svg { width: 15px; height: 15px; }
+.etapa-item.done .etapa-icon { background: var(--tertiary-light); color: var(--tertiary-color); }
+.etapa-item.current .etapa-icon { background: #fef3dc; color: var(--primary-color); }
+
+.etapa-body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.etapa-title { font-size: 14px; font-weight: 700; color: var(--text-main); }
+.etapa-body .badge { font-size: 10.5px; padding: 2px 10px; }
+
+.etapa-check {
+    width: 20px; height: 20px; padding: 0; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+    border: 1.5px solid var(--primary-light);
+    border-radius: 4px;
+    color: transparent;
+    transition: background 0.2s, color 0.2s;
+}
+.etapa-check svg { width: 12px; height: 12px; }
+.etapa-check:hover, .etapa-check:focus-visible { background: #fef3dc; color: var(--primary-color); outline: none; }
+
+@media (max-width: 900px) {
+    .andamento { grid-template-columns: 1fr; }
+}
 @media (max-width: 768px) {
     .proc-empty { font-size: 18px; min-height: 240px; }
 }
