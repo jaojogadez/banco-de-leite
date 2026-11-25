@@ -263,6 +263,16 @@
                                 <input type="number" id="inputFrascos" value="1" min="1" step="1" inputmode="numeric">
                                 <small class="field-error" id="erroFrascos"></small>
                             </div>
+                            <div class="m-field">
+                                <span class="m-label">Tipo de leite</span>
+                                <div class="select" id="selTipo" data-placeholder="Selecione...">
+                                    <button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                                        <span class="select-value">Selecione...</span>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </button>
+                                    <ul class="select-menu" role="listbox" hidden></ul>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -316,6 +326,17 @@
                     </button>
                 </footer>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal de exclusão -->
+    <div class="modal-backdrop" id="deleteModal" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+            <p class="modal-text" id="deleteTitle">Tem certeza que deseja excluir<br>essa coleta?</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" id="btnCancelDelete">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" id="btnConfirmDelete">Confirmar</button>
+            </div>
         </div>
     </div>
 

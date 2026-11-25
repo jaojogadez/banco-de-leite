@@ -9,6 +9,8 @@
     const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
     const ICON_SAVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
 
+    const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+
     const BADGES = {
         colostro:  { css: 'badge-colostro',  label: 'Colostro' },
         transicao: { css: 'badge-transicao', label: 'Transição' },
@@ -26,6 +28,7 @@
         volume: $('inputVolume'), frascos: $('inputFrascos'), obs: $('inputObs'),
         erroDoadora: $('erroDoadora'), erroInicio: $('erroInicio'), erroRecebimento: $('erroRecebimento'),
         erroVolume: $('erroVolume'), erroFrascos: $('erroFrascos'),
+        delModal: $('deleteModal'), btnCancelDelete: $('btnCancelDelete'), btnConfirmDelete: $('btnConfirmDelete'),
     };
 
     /* ---------- Helpers ---------- */
@@ -39,7 +42,13 @@
 
     /* Classificação pelo tempo de vida do bebê no início da coleta:
        até 7 dias = colostro, 8 a 15 dias = transição, acima disso = leite maduro. */
+    /* Tipo escolhido no cadastro; se não houver, usa o cálculo automático pela data. */
     function classify(c) {
+        if (c.tipoLeite && BADGES[c.tipoLeite]) return c.tipoLeite;
+        return autoTipo(c);
+    }
+
+    function autoTipo(c) {
         if (!c.nascimentoBebe) return null;
         const ref = c.inicioColeta || c.dataRecebimento || todayISO();
         const dias = Math.round((parseISO(ref) - parseISO(c.nascimentoBebe)) / 864e5);
@@ -97,10 +106,11 @@
     }
 
     let coletas = load();
-    const state = { mode: 'create', editingId: null };
+    const state = { mode: 'create', editingId: null, tipoManual: false };
+    let deletingId = null;
 
     /* ---------- Dropdown customizado ---------- */
-    function createSelect(root, { pill = false } = {}) {
+    function createSelect(root, { pill = false, onChange } = {}) {
         const trigger = root.querySelector('.select-trigger');
         const label = root.querySelector('.select-value');
         const menu = root.querySelector('.select-menu');
@@ -144,6 +154,7 @@
         function choose(li) {
             if (!li || !li.dataset.value) return;
             setValue(li.dataset.value);
+            if (onChange) onChange(li.dataset.value);
             trigger.classList.remove('invalid');
             close();
             trigger.focus();
@@ -177,6 +188,8 @@
     const selDoadora = createSelect($('selDoadora'));
     const selCondicao = createSelect($('selCondicao'), { pill: true });
     selCondicao.setItems(CONDICOES.map((c) => ({ value: c, label: c })));
+    const selTipo = createSelect($('selTipo'), { onChange: () => { state.tipoManual = true; } });
+    selTipo.setItems(Object.entries(BADGES).map(([value, b]) => ({ value, label: b.label })));
 
     /* ---------- Render ---------- */
     function render() {
@@ -205,6 +218,7 @@
                     <div class="row-actions">
                         <button class="icon-btn" data-action="view" aria-label="Ver coleta ${escapeHtml(c.codigo)}" title="Visualizar">${ICON_EYE}</button>
                         <button class="icon-btn" data-action="edit" aria-label="Editar coleta ${escapeHtml(c.codigo)}" title="Editar">${ICON_EDIT}</button>
+                        <button class="icon-btn danger" data-action="delete" aria-label="Excluir coleta ${escapeHtml(c.codigo)}" title="Excluir">${ICON_TRASH}</button>
                     </div>
                 </td>
             </tr>`;
@@ -235,6 +249,8 @@
         selDoadora.setItems(options);
         selDoadora.setValue(c ? c.doadoraId : '');
         selCondicao.setValue(c ? c.condicao : '');
+        selTipo.setValue(c ? (c.tipoLeite || classify(c) || '') : '');
+        state.tipoManual = Boolean(c && c.tipoLeite);
 
         el.nascimento.value = c ? c.nascimentoBebe : '';
         el.inicio.value = c ? c.inicioColeta : '';
@@ -250,6 +266,7 @@
         el.form.querySelectorAll('input').forEach((i) => { i.disabled = flag; });
         selDoadora.setDisabled(flag);
         selCondicao.setDisabled(flag);
+        selTipo.setDisabled(flag);
     }
 
     function clearErrors() {
@@ -280,6 +297,7 @@
     function closeModal() {
         selDoadora.close();
         selCondicao.close();
+        selTipo.close();
         el.modal.hidden = true;
         document.body.style.overflow = '';
         state.editingId = null;
@@ -333,6 +351,7 @@
             identificacaoCorreta: getRadio('identificacao'),
             materiaisEstranhos: getRadio('materiais'),
             condicao: selCondicao.getValue(),
+            tipoLeite: selTipo.getValue(),
             observacoes: el.obs.value.trim(),
         };
 
@@ -355,14 +374,43 @@
         const btn = e.target.closest('button[data-action]');
         if (!btn) return;
         const coleta = coletas.find((c) => c.id === btn.closest('tr').dataset.id);
+        if (!coleta) return;
+        if (btn.dataset.action === 'delete') {
+            deletingId = coleta.id;
+            el.delModal.hidden = false;
+            el.btnCancelDelete.focus();
+            return;
+        }
         openModal(btn.dataset.action === 'edit' ? 'edit' : 'view', coleta);
     });
 
     el.btnFechar.addEventListener('click', closeModal);
     el.btnCancelar.addEventListener('click', closeModal);
     el.modal.addEventListener('click', (e) => { if (e.target === el.modal) closeModal(); });
+    /* Sugere o tipo de leite pelas datas, enquanto a pessoa não escolher manualmente. */
+    function suggestTipo() {
+        if (state.mode === 'view' || state.tipoManual) return;
+        selTipo.setValue(autoTipo({
+            nascimentoBebe: el.nascimento.value, inicioColeta: el.inicio.value, dataRecebimento: el.recebimento.value,
+        }) || '');
+    }
+    [el.nascimento, el.inicio, el.recebimento].forEach((i) => i.addEventListener('change', suggestTipo));
+
+    /* Exclusão */
+    const closeDelete = () => { deletingId = null; el.delModal.hidden = true; };
+    el.btnCancelDelete.addEventListener('click', closeDelete);
+    el.delModal.addEventListener('click', (e) => { if (e.target === el.delModal) closeDelete(); });
+    el.btnConfirmDelete.addEventListener('click', () => {
+        coletas = coletas.filter((c) => c.id !== deletingId);
+        save();
+        render();
+        closeDelete();
+    });
+
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !el.modal.hidden) closeModal();
+        if (e.key !== 'Escape') return;
+        if (!el.delModal.hidden) closeDelete();
+        else if (!el.modal.hidden) closeModal();
     });
 
     render();
