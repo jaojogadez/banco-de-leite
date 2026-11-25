@@ -184,20 +184,26 @@
     }
 
     /* ---------- Render: andamento do lote ---------- */
-    function renderDetail(p) {
+    function renderDetail(p, anim = {}) {
         const i = info(p, readList(COLETAS_KEY), readList(DONORS_KEY));
         const done = p.datas.length;
         const fin = isFinalizado(p);
 
+        const last = ETAPAS.length - 1;
+        const sfx = (anim.done === last || anim.undone === last) ? ' status-anim' : '';
         const status = fin
-            ? '<span class="badge badge-maduro">Pronto</span>'
-            : '<span class="badge badge-transicao">Em andamento</span>';
+            ? `<span class="badge badge-maduro${sfx}">Pronto</span>`
+            : `<span class="badge badge-transicao${sfx}">Em andamento</span>`;
 
         const etapas = ETAPAS.map((nome, idx) => {
             let cls, icon, tag, check = '';
             if (idx < done) {
                 cls = 'done'; icon = ICON_CHECK;
                 tag = `<span class="badge badge-maduro">Concluído em ${fmtDateTime(p.datas[idx])}</span>`;
+                /* Só a última etapa concluída pode ser desmarcada (mantém a ordem do fluxo). */
+                if (idx === done - 1) {
+                    check = `<button type="button" class="etapa-check checked" data-action="undo" title="Desmarcar etapa" aria-label="Desmarcar etapa: ${escapeHtml(nome)}">${ICON_CHECK}</button>`;
+                }
             } else if (idx === done) {
                 cls = 'current'; icon = ICON_CLOCK;
                 tag = '<span class="badge badge-transicao">Em andamento</span>';
@@ -206,8 +212,10 @@
                 cls = 'pending'; icon = PENDING_ICONS[idx];
                 tag = '<span class="badge badge-neutro">Pendente</span>';
             }
+            const fx = [anim.done === idx && 'just-done', anim.current === idx && 'just-current', anim.undone === idx && 'just-undone', anim.pending === idx && 'just-pending']
+                .filter(Boolean).join(' ');
             return `
-            <li class="etapa-item ${cls}">
+            <li class="etapa-item ${cls} ${fx}">
                 <span class="etapa-icon">${icon}</span>
                 <div class="etapa-body"><strong class="etapa-title">${idx + 1}. ${nome}</strong>${tag}</div>
                 ${check}
@@ -325,15 +333,34 @@
         }
     });
 
+    /* Concluir / desmarcar etapa (com uma pequena animação antes de atualizar). */
+    let busy = false;
     el.detailView.addEventListener('click', (e) => {
         if (e.target.closest('#btnVoltar')) { location.hash = ''; return; }
-        if (!e.target.closest('[data-action="advance"]')) return;
+        const btn = e.target.closest('[data-action="advance"], [data-action="undo"]');
+        if (!btn || busy) return;
 
         const p = currentProc();
-        if (!p || isFinalizado(p)) return;
-        p.datas.push(new Date().toISOString());
-        save();
-        renderDetail(p);
+        const undo = btn.dataset.action === 'undo';
+        if (!p || (undo ? !p.datas.length : isFinalizado(p))) return;
+
+        busy = true;
+        btn.classList.toggle('checked', !undo);
+        btn.classList.add('pop');
+
+        setTimeout(() => {
+            const idx = p.datas.length;
+            if (undo) {
+                p.datas.pop();
+                save();
+                renderDetail(p, { undone: idx - 1, pending: idx });
+            } else {
+                p.datas.push(new Date().toISOString());
+                save();
+                renderDetail(p, { done: idx, current: idx + 1 });
+            }
+            busy = false;
+        }, 380);
     });
 
     document.addEventListener('keydown', (e) => {

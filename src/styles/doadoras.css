@@ -205,3 +205,5 @@
     .form-grid { grid-template-columns: 1fr; gap: 16px; }
     .form-actions { justify-content: flex-start; }
 }
+/* ---------- Modal de doadora ---------- */
+.modal-grid .span-2 { grid-column: 1 / -1; }

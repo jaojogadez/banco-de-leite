@@ -114,3 +114,54 @@
 @media (max-width: 768px) {
     .proc-empty { font-size: 18px; min-height: 240px; }
 }
+
+/* ---------- Animações das etapas ---------- */
+.etapa-item { position: relative; overflow: hidden; }
+
+.etapa-check { transition: background 0.25s, color 0.25s, border-color 0.25s; }
+/* Marcado = mesmo tom azul-esverdeado de "Concluído em ..." */
+.etapa-check.checked { background: var(--tertiary-light); border-color: var(--tertiary-color); color: var(--tertiary-color); }
+.etapa-check.pop { animation: etapa-pop 0.35s ease; }
+.etapa-check.pop svg polyline { stroke-dasharray: 24; animation: etapa-draw 0.3s 0.05s ease both; }
+
+@keyframes etapa-pop    { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes etapa-draw   { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+@keyframes etapa-slide  { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes etapa-ripple { 0% { box-shadow: 0 0 0 0 rgba(59, 148, 141, 0.45); } 100% { box-shadow: 0 0 0 12px rgba(59, 148, 141, 0); } }
+@keyframes etapa-sweep  { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes etapa-lift   { from { opacity: 0.6; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes etapa-to-done    { from { border-color: #e3c27d; background: #fffdf7; } to { border-color: var(--border-color); background: #fff; } }
+@keyframes etapa-to-current { from { border-color: var(--border-color); background: #fff; } to { border-color: #e3c27d; background: #fffdf7; } }
+
+/* Etapa que acabou de ser concluída: cor transita, brilho passa pelo card, ✓ é desenhado */
+.etapa-item.just-done { animation: etapa-to-done 0.7s ease both; }
+.etapa-item.just-done::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(59, 148, 141, 0.2), transparent);
+    animation: etapa-sweep 0.8s ease-out;
+}
+.etapa-item.just-done .etapa-icon { animation: etapa-pop 0.5s ease, etapa-ripple 0.7s ease-out; }
+.etapa-item.just-done .etapa-icon polyline { stroke-dasharray: 24; animation: etapa-draw 0.45s 0.1s ease both; }
+.etapa-item.just-done .badge { animation: etapa-slide 0.4s 0.15s ease both; }
+
+/* Próxima etapa: sobe e "acende" logo depois */
+.etapa-item.just-current { animation: etapa-to-current 0.5s 0.3s both, etapa-lift 0.5s 0.3s both; }
+.etapa-item.just-current .etapa-icon { animation: etapa-pop 0.45s 0.35s both; }
+.etapa-item.just-current .badge { animation: etapa-slide 0.4s 0.4s both; }
+.etapa-item.just-current .etapa-check { animation: etapa-pop 0.4s 0.5s both; }
+
+/* Desmarcar: a etapa volta a "acender" e a seguinte apaga */
+.etapa-item.just-undone { animation: etapa-to-current 0.5s both, etapa-lift 0.4s both; }
+.etapa-item.just-undone .etapa-icon { animation: etapa-pop 0.4s 0.05s both; }
+.etapa-item.just-undone .badge { animation: etapa-slide 0.35s 0.1s both; }
+.etapa-item.just-pending { animation: etapa-to-done 0.5s both; }
+
+.lote-card .status-anim { animation: etapa-pop 0.45s ease; }
+
+/* Movimento reduzido no sistema: mantém só a transição de cor, sem deslocar/escalar */
+@media (prefers-reduced-motion: reduce) {
+    .etapa-item::after { display: none; }
+    .etapa-item .etapa-icon, .etapa-item .etapa-icon polyline, .etapa-item .badge,
+    .etapa-check, .etapa-check svg polyline, .lote-card .status-anim { animation: none !important; }
+    .etapa-item.just-current, .etapa-item.just-undone { animation: etapa-to-current 0.5s both; }
+}

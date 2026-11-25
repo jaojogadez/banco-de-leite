@@ -164,34 +164,6 @@
                 <button class="btn-outline-teal" id="btnNovaDoadora" type="button">+ Cadastrar doadoras</button>
             </section>
 
-            <!-- ESTADO 2: formulário (cadastro / edição) -->
-            <section class="donor-form-card" id="formCard" hidden>
-                <h2 class="form-title" id="formTitle">Cadastrar doadora</h2>
-                <form id="donorForm" novalidate>
-                    <div class="form-grid">
-                        <div class="form-field">
-                            <label for="inputNome">Nome</label>
-                            <input type="text" id="inputNome" placeholder="Nome da doadora" autocomplete="off" required>
-                            <small class="field-error" id="erroNome"></small>
-                        </div>
-                        <div class="form-field">
-                            <label for="inputCpf">CPF</label>
-                            <input type="text" id="inputCpf" placeholder="CPF da doadora" inputmode="numeric" maxlength="14" autocomplete="off" required>
-                            <small class="field-error" id="erroCpf"></small>
-                        </div>
-                        <div class="form-field">
-                            <label for="inputTelefone">Telefone</label>
-                            <input type="text" id="inputTelefone" placeholder="Telefone da doadora" inputmode="tel" maxlength="15" autocomplete="off" required>
-                            <small class="field-error" id="erroTelefone"></small>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn-ghost" id="btnCancelarForm">Cancelar</button>
-                            <button type="submit" class="btn-teal" id="btnSubmit">CADASTRAR +</button>
-                        </div>
-                    </div>
-                </form>
-            </section>
-
             <!-- Tabela -->
             <section class="activities-section">
                 <h2 class="section-title">Doadoras cadastradas</h2>
@@ -212,6 +184,54 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- Modal: cadastrar / editar doadora -->
+    <div class="modal-backdrop" id="donorModal" hidden>
+        <div class="form-modal" role="dialog" aria-modal="true" aria-labelledby="donorModalTitle">
+            <header class="form-modal-header">
+                <span class="modal-title-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M6 20v-2a6 6 0 0 1 12 0v2"></path></svg>
+                </span>
+                <h2 class="form-modal-title" id="donorModalTitle">Cadastrar doadora</h2>
+                <button type="button" class="icon-btn modal-close" id="btnFecharModal" aria-label="Fechar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </header>
+
+            <form id="donorForm" novalidate>
+                <div class="form-modal-body">
+                    <div class="modal-grid">
+                        <div class="m-field span-2">
+                            <label class="m-label" for="inputNome">Nome <b class="req">*</b></label>
+                            <input type="text" id="inputNome" placeholder="Nome da doadora" autocomplete="off">
+                            <small class="field-error" id="erroNome"></small>
+                        </div>
+                        <div class="m-field">
+                            <label class="m-label" for="inputCpf">CPF <b class="req">*</b></label>
+                            <input type="text" id="inputCpf" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" autocomplete="off">
+                            <small class="field-error" id="erroCpf"></small>
+                        </div>
+                        <div class="m-field">
+                            <label class="m-label" for="inputTelefone">Telefone <b class="req">*</b></label>
+                            <input type="text" id="inputTelefone" placeholder="(00) 00000-0000" inputmode="tel" maxlength="15" autocomplete="off">
+                            <small class="field-error" id="erroTelefone"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="form-modal-footer">
+                    <button type="button" class="btn-light" id="btnCancelarForm">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <span>Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn-primary-teal">
+                        <span id="btnSubmitIcon"></span>
+                        <span id="btnSubmitLabel">Cadastrar</span>
+                    </button>
+                </footer>
+            </form>
+        </div>
     </div>
 
     <!-- Modal de exclusão -->
