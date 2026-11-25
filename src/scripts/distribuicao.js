@@ -46,10 +46,14 @@
         return `D-${String(max + 1).padStart(3, '0')}`;
     }
 
-    /* Lotes de processamento finalizados e ainda sem distribuição. */
+    /* Lote pronto = as 5 etapas do processamento concluídas (formato novo: lista de datas). */
+    const loteCodigo = (p) => `L-${p.coletaCodigo}`;
+    const isPronto = (p) => (Array.isArray(p.datas) ? p.datas.length >= 5 : (p.etapasConcluidas || 0) >= 4);
+
+    /* Lotes prontos para distribuição e ainda sem distribuição cadastrada. */
     function availableLotes() {
         const usados = new Set(distribuicoes.map((d) => d.loteId));
-        return readList(PROC_KEY).filter((p) => !usados.has(p.id) && p.etapasConcluidas >= 4);
+        return readList(PROC_KEY).filter((p) => !usados.has(p.id) && isPronto(p));
     }
 
     /* ---------- Lista ---------- */
@@ -213,8 +217,9 @@
 
     /* ---------- Modal de nova distribuição ---------- */
     function openModal() {
-        selLote.setItems(availableLotes().map((p) => ({ value: p.id, label: p.lote })));
+        selLote.setItems(availableLotes().map((p) => ({ value: p.id, label: loteCodigo(p) })));
         selLote.setValue('');
+        lastLote = '';
         el.distForm.reset();
         el.mFrascos.value = 1;
         el.mData.value = todayISO();
@@ -229,6 +234,18 @@
         el.modal.hidden = true;
         document.body.style.overflow = '';
     }
+
+    /* Ao escolher o lote, já sugere o volume e a quantidade de frascos do processamento. */
+    let lastLote = '';
+    const onLotePick = () => setTimeout(() => {
+        const lote = availableLotes().find((p) => p.id === selLote.getValue());
+        if (!lote || lote.id === lastLote) return;
+        lastLote = lote.id;
+        el.mVolume.value = lote.volume || '';
+        el.mFrascos.value = lote.frascos || 1;
+    }, 0);
+    $('selLote').addEventListener('click', onLotePick);
+    $('selLote').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') onLotePick(); });
 
     el.btnNova.addEventListener('click', openModal);
     el.btnFecharDist.addEventListener('click', closeModal);
@@ -250,7 +267,7 @@
             id: crypto.randomUUID(),
             codigo: nextCodigo(),
             loteId: lote.id,
-            loteCodigo: lote.lote,
+            loteCodigo: loteCodigo(lote),
             coletaCodigo: lote.coletaCodigo,
             doadoraNome: lote.doadoraNome,
             dataDistribuicao: el.mData.value || todayISO(),
