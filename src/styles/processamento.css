@@ -1,3 +1,6 @@
+/* Processamento — reutiliza badges, select e botões de coletas.css e os modais de modal.css */
+#listView[hidden], #detailView[hidden] { display: none; }
+
 /* ---------- Estado vazio ---------- */
 .proc-empty {
     min-height: 360px;
@@ -13,71 +16,152 @@
 .proc-empty[hidden] { display: none; }
 
 /* ---------- Tabela ---------- */
-.proc-table { min-width: 820px; }
-
+.proc-table { min-width: 680px; }
 .proc-table td:first-child,
 .proc-table thead th:first-child { padding-left: 24px; }
 .proc-table td:first-child { font-weight: 700; color: var(--text-main); }
 
-.proc-table td:nth-child(2) {
-    padding-left: 22px;
-    font-weight: 600;
-    color: var(--secondary-color);
-}
+.proc-table td:nth-child(2) { padding-left: 22px; font-weight: 700; color: #211915; }
 .proc-table thead th:nth-child(2) { padding-left: 22px; }
-
-.proc-table td:nth-child(3) { font-weight: 700; color: #211915; }
-.proc-table td:nth-child(6) { color: var(--secondary-color); font-weight: 500; }
+.proc-table td:nth-child(3) { color: var(--secondary-color); font-weight: 500; }
 
 .proc-table td:last-child,
-.proc-table thead th:last-child {
-    text-align: center;
-    padding-right: 22px;
-}
-.proc-table .row-actions { justify-content: center; }
+.proc-table thead th:last-child { text-align: left; padding-right: 22px; color: inherit; }
+.proc-table thead th:last-child { color: #9d897c; }
 
-/* ---------- Barra de progresso por etapas ---------- */
-.steps { display: inline-flex; gap: 4px; vertical-align: middle; }
-.step {
-    width: 22px;
-    height: 6px;
-    border-radius: 3px;
-    background: #efe7dd;
-}
-.step.done { background: #47b5ac; }
-.step-count {
-    margin-left: 8px;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--secondary-color);
-    vertical-align: middle;
-}
-
-.icon-btn:disabled { opacity: 0.35; cursor: default; }
-.icon-btn:disabled:hover { background: transparent; color: #9d897c; }
-
-/* ---------- Modal compacto (centralizado, como no Figma) ---------- */
-.form-modal--sm {
-    max-width: 420px;
-    overflow: visible; /* o dropdown pode passar por cima do rodapé */
-}
-.form-modal--sm .form-modal-header {
-    justify-content: center;
-    border-bottom: 0;
-    padding: 26px 22px 8px;
-}
+/* ---------- Modal compacto de cadastro ---------- */
+.form-modal--sm { max-width: 420px; overflow: visible; }
+.form-modal--sm .form-modal-header { justify-content: center; border-bottom: 0; padding: 26px 22px 8px; }
 .form-modal--sm .form-modal-title { flex: none; font-size: 16px; }
-.form-modal--sm .form-modal-body {
-    overflow: visible;
-    padding: 12px 26px 14px;
-}
-.form-modal--sm .m-label { font-size: 11.5px; margin-bottom: 8px; }
-.form-modal--sm .form-modal-footer {
-    justify-content: center;
-    border-top: 0;
-    padding: 10px 22px 26px;
+.form-modal--sm .form-modal-body { overflow: visible; padding: 12px 26px 14px; }
+.form-modal--sm .m-label { font-size: 11.5px; margin-bottom: 8px; text-align: center; }
+.form-modal--sm .form-modal-footer { justify-content: center; border-top: 0; padding: 10px 22px 26px; }
+
+/* ---------- Andamento do lote ---------- */
+.detail-back { margin: -6px 0 14px; padding-left: 0; }
+
+.andamento {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    align-items: start;
 }
 
+.lote-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px 22px 24px;
+}
+.lote-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.lote-icon {
+    width: 46px; height: 46px; flex-shrink: 0;
+    border-radius: 10px;
+    background: #fef3dc;
+    color: var(--primary-color);
+    display: flex; align-items: center; justify-content: center;
+}
+.lote-icon svg { width: 22px; height: 22px; }
+.lote-label { display: block; font-size: 11px; font-weight: 600; color: var(--secondary-color); }
+.lote-code { display: block; font-size: 20px; font-weight: 800; color: var(--text-main); }
+
+.lote-data { margin-top: 16px; padding-top: 4px; border-top: 1px solid var(--border-subtle); }
+.lote-data dt { margin-top: 14px; font-size: 11px; font-weight: 600; color: var(--secondary-color); }
+.lote-data dd { margin-top: 3px; font-size: 16px; font-weight: 800; color: var(--text-main); }
+
+.etapas { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.etapa-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+.etapa-item.current { border-color: #e3c27d; background: #fffdf7; }
+
+.etapa-icon {
+    width: 30px; height: 30px; flex-shrink: 0;
+    border-radius: 50%;
+    background: #f4eee6;
+    color: #9d897c;
+    display: flex; align-items: center; justify-content: center;
+}
+.etapa-icon svg { width: 15px; height: 15px; }
+.etapa-item.done .etapa-icon { background: var(--tertiary-light); color: var(--tertiary-color); }
+.etapa-item.current .etapa-icon { background: #fef3dc; color: var(--primary-color); }
+
+.etapa-body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.etapa-title { font-size: 14px; font-weight: 700; color: var(--text-main); }
+.etapa-body .badge { font-size: 10.5px; padding: 2px 10px; }
+
+.etapa-check {
+    width: 20px; height: 20px; padding: 0; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+    border: 1.5px solid var(--primary-light);
+    border-radius: 4px;
+    color: transparent;
+    transition: background 0.2s, color 0.2s;
+}
+.etapa-check svg { width: 12px; height: 12px; }
+.etapa-check:hover, .etapa-check:focus-visible { background: #fef3dc; color: var(--primary-color); outline: none; }
+
+@media (max-width: 900px) {
+    .andamento { grid-template-columns: 1fr; }
+}
 @media (max-width: 768px) {
     .proc-empty { font-size: 18px; min-height: 240px; }
+}
+
+/* ---------- Animações das etapas ---------- */
+.etapa-item { position: relative; overflow: hidden; }
+
+.etapa-check { transition: background 0.25s, color 0.25s, border-color 0.25s; }
+/* Marcado = mesmo tom azul-esverdeado de "Concluído em ..." */
+.etapa-check.checked { background: var(--tertiary-light); border-color: var(--tertiary-color); color: var(--tertiary-color); }
+.etapa-check.pop { animation: etapa-pop 0.35s ease; }
+.etapa-check.pop svg polyline { stroke-dasharray: 24; animation: etapa-draw 0.3s 0.05s ease both; }
+
+@keyframes etapa-pop    { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes etapa-draw   { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+@keyframes etapa-slide  { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes etapa-ripple { 0% { box-shadow: 0 0 0 0 rgba(59, 148, 141, 0.45); } 100% { box-shadow: 0 0 0 12px rgba(59, 148, 141, 0); } }
+@keyframes etapa-sweep  { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes etapa-lift   { from { opacity: 0.6; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes etapa-to-done    { from { border-color: #e3c27d; background: #fffdf7; } to { border-color: var(--border-color); background: #fff; } }
+@keyframes etapa-to-current { from { border-color: var(--border-color); background: #fff; } to { border-color: #e3c27d; background: #fffdf7; } }
+
+/* Etapa que acabou de ser concluída: cor transita, brilho passa pelo card, ✓ é desenhado */
+.etapa-item.just-done { animation: etapa-to-done 0.7s ease both; }
+.etapa-item.just-done::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(59, 148, 141, 0.2), transparent);
+    animation: etapa-sweep 0.8s ease-out;
+}
+.etapa-item.just-done .etapa-icon { animation: etapa-pop 0.5s ease, etapa-ripple 0.7s ease-out; }
+.etapa-item.just-done .etapa-icon polyline { stroke-dasharray: 24; animation: etapa-draw 0.45s 0.1s ease both; }
+.etapa-item.just-done .badge { animation: etapa-slide 0.4s 0.15s ease both; }
+
+/* Próxima etapa: sobe e "acende" logo depois */
+.etapa-item.just-current { animation: etapa-to-current 0.5s 0.3s both, etapa-lift 0.5s 0.3s both; }
+.etapa-item.just-current .etapa-icon { animation: etapa-pop 0.45s 0.35s both; }
+.etapa-item.just-current .badge { animation: etapa-slide 0.4s 0.4s both; }
+.etapa-item.just-current .etapa-check { animation: etapa-pop 0.4s 0.5s both; }
+
+/* Desmarcar: a etapa volta a "acender" e a seguinte apaga */
+.etapa-item.just-undone { animation: etapa-to-current 0.5s both, etapa-lift 0.4s both; }
+.etapa-item.just-undone .etapa-icon { animation: etapa-pop 0.4s 0.05s both; }
+.etapa-item.just-undone .badge { animation: etapa-slide 0.35s 0.1s both; }
+.etapa-item.just-pending { animation: etapa-to-done 0.5s both; }
+
+.lote-card .status-anim { animation: etapa-pop 0.45s ease; }
+
+/* Movimento reduzido no sistema: mantém só a transição de cor, sem deslocar/escalar */
+@media (prefers-reduced-motion: reduce) {
+    .etapa-item::after { display: none; }
+    .etapa-item .etapa-icon, .etapa-item .etapa-icon polyline, .etapa-item .badge,
+    .etapa-check, .etapa-check svg polyline, .lote-card .status-anim { animation: none !important; }
+    .etapa-item.just-current, .etapa-item.just-undone { animation: etapa-to-current 0.5s both; }
 }

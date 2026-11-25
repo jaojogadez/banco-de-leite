@@ -2,16 +2,22 @@
     const STORAGE_KEY = 'blhm:doadoras';
     const EDITED_KEY = 'blhm:doadoras:editadas';
 
+    const ICON_SAVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
+    const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+    const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+
     const $ = (id) => document.getElementById(id);
     const els = {
-        statsRow: $('statsRow'), statEditadas: $('statEditadas'), statTotal: $('statTotal'),
+        statEditadas: $('statEditadas'), statTotal: $('statTotal'),
         btnNova: $('btnNovaDoadora'),
-        formCard: $('formCard'), formTitle: $('formTitle'), form: $('donorForm'),
+        modal: $('donorModal'), modalTitle: $('donorModalTitle'), form: $('donorForm'),
         nome: $('inputNome'), cpf: $('inputCpf'), telefone: $('inputTelefone'),
-        btnSubmit: $('btnSubmit'), btnCancelarForm: $('btnCancelarForm'),
+        btnFechar: $('btnFecharModal'), btnCancelarForm: $('btnCancelarForm'),
+        btnSubmitIcon: $('btnSubmitIcon'), btnSubmitLabel: $('btnSubmitLabel'),
         body: $('donorsBody'), empty: $('emptyState'),
-        modal: $('deleteModal'), btnCancelDelete: $('btnCancelDelete'), btnConfirmDelete: $('btnConfirmDelete'),
+        delModal: $('deleteModal'), btnCancelDelete: $('btnCancelDelete'), btnConfirmDelete: $('btnConfirmDelete'),
     };
+    const ERROS = { nome: 'erroNome', cpf: 'erroCpf', telefone: 'erroTelefone' };
 
     let donors = load();
     let editingId = null;
@@ -25,9 +31,9 @@
         } catch (_) { /* ignora */ }
         const now = Date.now();
         const seed = [
-            { id: crypto.randomUUID(), nome: 'Larissa Souza',    cpf: '455.678.987-00', telefone: '(14) 99767-3464', criadoEm: new Date(now - 1 * 36e5).toISOString() },
-            { id: crypto.randomUUID(), nome: 'Clarisse Vicente', cpf: '334.667.879-07', telefone: '(14) 99767-3464', criadoEm: new Date(now - 7 * 36e5).toISOString() },
-            { id: crypto.randomUUID(), nome: 'Sara Valdenebre',  cpf: '212.567.436-98', telefone: '(14) 99767-3464', criadoEm: new Date(now - 26 * 36e5).toISOString() },
+            { id: crypto.randomUUID(), nome: 'Larissa Souza',    cpf: '529.982.247-25', telefone: '(14) 99767-3464', criadoEm: new Date(now - 1 * 36e5).toISOString() },
+            { id: crypto.randomUUID(), nome: 'Clarisse Vicente', cpf: '111.444.777-35', telefone: '(14) 99767-3464', criadoEm: new Date(now - 7 * 36e5).toISOString() },
+            { id: crypto.randomUUID(), nome: 'Sara Valdenebre',  cpf: '123.456.789-09', telefone: '(14) 99767-3464', criadoEm: new Date(now - 26 * 36e5).toISOString() },
         ];
         localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
         return seed;
@@ -35,7 +41,7 @@
     const save = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(donors));
     const getEdited = () => Number(localStorage.getItem(EDITED_KEY) || 0);
 
-    /* ---------- Helpers ---------- */
+    /* ---------- Máscaras e validações ---------- */
     const onlyDigits = (v) => v.replace(/\D/g, '');
 
     function maskCpf(v) {
@@ -53,6 +59,27 @@
         return d.replace(/(\d{2})(\d{5})(\d+)/, '($1) $2-$3');
     }
 
+    /* CPF: 11 dígitos, não repetidos, com os 2 dígitos verificadores corretos. */
+    function isValidCpf(value) {
+        const d = onlyDigits(value);
+        if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+        const dv = (len) => {
+            let sum = 0;
+            for (let i = 0; i < len; i++) sum += Number(d[i]) * (len + 1 - i);
+            const r = (sum * 10) % 11;
+            return r === 10 ? 0 : r;
+        };
+        return dv(9) === Number(d[9]) && dv(10) === Number(d[10]);
+    }
+
+    /* Telefone: DDD válido (11–99) + 8 dígitos (fixo) ou 9 dígitos começando em 9 (celular). */
+    function isValidPhone(value) {
+        const d = onlyDigits(value);
+        if (d.length !== 10 && d.length !== 11) return false;
+        if (Number(d.slice(0, 2)) < 11) return false;
+        return d.length === 10 || d[2] === '9';
+    }
+
     function formatDate(iso) {
         const date = new Date(iso);
         const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -67,9 +94,6 @@
         s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     /* ---------- Render ---------- */
-    const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
-    const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
-
     function render() {
         els.body.innerHTML = donors.map((d) => `
             <tr data-id="${d.id}">
@@ -90,57 +114,64 @@
         els.statEditadas.textContent = getEdited();
     }
 
-    /* ---------- Formulário ---------- */
+    /* ---------- Modal de cadastro / edição ---------- */
     function openForm(donor = null) {
         editingId = donor ? donor.id : null;
-        els.formTitle.textContent = donor ? 'Editar doadora' : 'Cadastrar doadora';
-        els.btnSubmit.textContent = donor ? 'EDITAR +' : 'CADASTRAR +';
+        els.modalTitle.textContent = donor ? 'Editar doadora' : 'Cadastrar doadora';
+        els.btnSubmitLabel.textContent = donor ? 'Salvar alterações' : 'Cadastrar';
+        els.btnSubmitIcon.innerHTML = donor ? ICON_EDIT : ICON_SAVE;
         els.nome.value = donor?.nome ?? '';
         els.cpf.value = donor?.cpf ?? '';
         els.telefone.value = donor?.telefone ?? '';
         clearErrors();
-        els.statsRow.hidden = true;
-        els.formCard.hidden = false;
+        els.modal.hidden = false;
+        document.body.style.overflow = 'hidden';
         els.nome.focus();
-        els.formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function closeForm() {
         editingId = null;
         els.form.reset();
         clearErrors();
-        els.formCard.hidden = true;
-        els.statsRow.hidden = false;
+        els.modal.hidden = true;
+        document.body.style.overflow = '';
     }
 
-    function clearErrors() {
-        [['nome', 'erroNome'], ['cpf', 'erroCpf'], ['telefone', 'erroTelefone']].forEach(([field, err]) => {
-            els[field].classList.remove('invalid');
-            $(err).textContent = '';
-        });
+    function clearFieldError(field) {
+        els[field].classList.remove('invalid');
+        $(ERROS[field]).textContent = '';
     }
+    const clearErrors = () => Object.keys(ERROS).forEach(clearFieldError);
 
-    function setError(field, errId, msg) {
+    function setError(field, msg) {
         els[field].classList.add('invalid');
-        $(errId).textContent = msg;
+        $(ERROS[field]).textContent = msg;
     }
 
     function validate() {
         clearErrors();
         let ok = true;
-        if (els.nome.value.trim().length < 3) { setError('nome', 'erroNome', 'Informe o nome completo.'); ok = false; }
-        if (onlyDigits(els.cpf.value).length !== 11) { setError('cpf', 'erroCpf', 'CPF deve ter 11 dígitos.'); ok = false; }
-        else if (donors.some((d) => d.cpf === els.cpf.value && d.id !== editingId)) { setError('cpf', 'erroCpf', 'CPF já cadastrado.'); ok = false; }
-        if (onlyDigits(els.telefone.value).length < 10) { setError('telefone', 'erroTelefone', 'Telefone inválido.'); ok = false; }
+
+        if (els.nome.value.trim().length < 3) { setError('nome', 'Informe o nome completo.'); ok = false; }
+
+        if (onlyDigits(els.cpf.value).length !== 11) { setError('cpf', 'CPF deve ter 11 dígitos.'); ok = false; }
+        else if (!isValidCpf(els.cpf.value)) { setError('cpf', 'CPF inválido.'); ok = false; }
+        else if (donors.some((d) => d.cpf === els.cpf.value && d.id !== editingId)) { setError('cpf', 'CPF já cadastrado.'); ok = false; }
+
+        if (!isValidPhone(els.telefone.value)) { setError('telefone', 'Telefone inválido. Ex.: (14) 99999-9999'); ok = false; }
+
         return ok;
     }
 
     /* ---------- Eventos ---------- */
-    els.cpf.addEventListener('input', () => { els.cpf.value = maskCpf(els.cpf.value); });
-    els.telefone.addEventListener('input', () => { els.telefone.value = maskPhone(els.telefone.value); });
+    els.nome.addEventListener('input', () => clearFieldError('nome'));
+    els.cpf.addEventListener('input', () => { els.cpf.value = maskCpf(els.cpf.value); clearFieldError('cpf'); });
+    els.telefone.addEventListener('input', () => { els.telefone.value = maskPhone(els.telefone.value); clearFieldError('telefone'); });
 
     els.btnNova.addEventListener('click', () => openForm());
+    els.btnFechar.addEventListener('click', closeForm);
     els.btnCancelarForm.addEventListener('click', closeForm);
+    els.modal.addEventListener('click', (e) => { if (e.target === els.modal) closeForm(); });
 
     els.form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -169,26 +200,26 @@
             openForm(donors.find((d) => d.id === id));
         } else {
             deletingId = id;
-            els.modal.hidden = false;
+            els.delModal.hidden = false;
             els.btnCancelDelete.focus();
         }
     });
 
-    function closeModal() { deletingId = null; els.modal.hidden = true; }
+    function closeDelete() { deletingId = null; els.delModal.hidden = true; }
 
-    els.btnCancelDelete.addEventListener('click', closeModal);
-    els.modal.addEventListener('click', (e) => { if (e.target === els.modal) closeModal(); });
+    els.btnCancelDelete.addEventListener('click', closeDelete);
+    els.delModal.addEventListener('click', (e) => { if (e.target === els.delModal) closeDelete(); });
     document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
-        if (!els.modal.hidden) closeModal();
-        else if (!els.formCard.hidden) closeForm();
+        if (!els.delModal.hidden) closeDelete();
+        else if (!els.modal.hidden) closeForm();
     });
 
     els.btnConfirmDelete.addEventListener('click', () => {
         donors = donors.filter((d) => d.id !== deletingId);
         save();
         render();
-        closeModal();
+        closeDelete();
     });
 
     render();
