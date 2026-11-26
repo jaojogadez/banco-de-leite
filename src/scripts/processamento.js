@@ -53,6 +53,8 @@
     const todayISO = () => new Date().toLocaleDateString('sv-SE');
 
     function classify(c) {
+        /* Tipo escolhido no cadastro da coleta tem prioridade; senão, cálculo pela data. */
+        if (c.tipoLeite && TIPOS[c.tipoLeite]) return c.tipoLeite;
         if (!c.nascimentoBebe) return null;
         const ref = c.inicioColeta || c.dataRecebimento || todayISO();
         const dias = Math.round((parseISO(ref) - parseISO(c.nascimentoBebe)) / 864e5);
@@ -171,7 +173,7 @@
             <tr data-id="${p.id}">
                 <td>${escapeHtml(loteCodigo(p))}</td>
                 <td>${escapeHtml(i.doadora)}</td>
-                <td>${escapeHtml(etapaAtual(p))}</td>
+                <td>${isFinalizado(p) ? '<span class="badge badge-maduro">Pronto para distribuição</span>' : escapeHtml(etapaAtual(p))}</td>
                 <td>${tipoBadge(i.tipo)}</td>
                 <td>
                     <div class="row-actions">
@@ -245,6 +247,33 @@
             </div>`;
     }
 
+    /* ---------- Aviso visual (toast) ---------- */
+    (() => {
+        const style = document.createElement('style');
+        style.textContent = `
+            .blhm-toast { position: fixed; left: 50%; bottom: 32px; transform: translate(-50%, 20px); z-index: 1000;
+                display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 12px;
+                background: #1f1a17; color: #fff; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+                opacity: 0; transition: opacity .25s ease, transform .25s ease; pointer-events: none; }
+            .blhm-toast.show { opacity: 1; transform: translate(-50%, 0); }
+            .blhm-toast svg { width: 18px; height: 18px; color: #4fb3a9; flex: none; }
+            tr.row-just-finished td { animation: blhmRowFlash 2.4s ease-out; }
+            @keyframes blhmRowFlash { 0%, 55% { background: rgba(79,179,169,.22); } 100% { background: transparent; } }`;
+        document.head.appendChild(style);
+    })();
+
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.className = 'blhm-toast';
+        t.setAttribute('role', 'status');
+        t.innerHTML = `${ICON_CHECK}<span>${escapeHtml(msg)}</span>`;
+        document.body.appendChild(t);
+        requestAnimationFrame(() => t.classList.add('show'));
+        setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3200);
+    }
+
+    let justFinishedId = null;
+
     /* ---------- Navegação entre lista e andamento (#lote-<id>) ---------- */
     function currentProc() {
         const m = location.hash.match(/^#lote-(.+)$/);
@@ -255,7 +284,15 @@
         const p = currentProc();
         el.listView.hidden = Boolean(p);
         el.detailView.hidden = !p;
-        if (p) renderDetail(p); else renderList();
+        if (p) renderDetail(p);
+        else {
+            renderList();
+            if (justFinishedId) {
+                const row = el.body.querySelector(`tr[data-id="${justFinishedId}"]`);
+                if (row) { row.classList.add('row-just-finished'); row.scrollIntoView({ block: 'nearest' }); }
+                justFinishedId = null;
+            }
+        }
     }
 
     window.addEventListener('hashchange', route);
@@ -358,6 +395,17 @@
                 p.datas.push(new Date().toISOString());
                 save();
                 renderDetail(p, { done: idx, current: idx + 1 });
+
+                /* Última etapa ("Pronto para distribuição"): sai do andamento e volta para a lista. */
+                if (isFinalizado(p)) {
+                    setTimeout(() => {
+                        justFinishedId = p.id;
+                        location.hash = '';
+                        showToast(`Lote ${loteCodigo(p)} finalizado e pronto para distribuição`);
+                        busy = false;
+                    }, 900);
+                    return;
+                }
             }
             busy = false;
         }, 380);

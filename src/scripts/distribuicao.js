@@ -13,8 +13,9 @@
         stepper: $('stepper'), stepTitle: $('stepTitle'), stepForm: $('stepForm'),
         fCodigo: $('fCodigo'), fHospital: $('fHospital'), fVolume: $('fVolume'), fDistancia: $('fDistancia'),
         btnAvancar: $('btnAvancar'), btnAvancarLabel: $('btnAvancarLabel'),
-        btnVoltar: $('btnVoltar'), btnVoltarConcluida: $('btnVoltarConcluida'), btnCancelarFluxo: $('btnCancelarFluxo'),
+        btnVoltar: $('btnVoltar'), btnEtapaAnterior: $('btnEtapaAnterior'), btnVoltarConcluida: $('btnVoltarConcluida'), btnCancelarFluxo: $('btnCancelarFluxo'),
         resCodigo: $('resCodigo'), resHospital: $('resHospital'), resVolume: $('resVolume'), resData: $('resData'),
+        cancelModal: $('cancelModal'), btnContinuarDepois: $('btnContinuarDepois'), btnConfirmCancel: $('btnConfirmCancel'),
         modal: $('distModal'), distForm: $('distForm'), btnFecharDist: $('btnFecharDist'), btnCancelarDist: $('btnCancelarDist'),
         mData: $('mData'), mVolume: $('mVolume'), mFrascos: $('mFrascos'), mHospital: $('mHospital'),
         mDistancia: $('mDistancia'), mObs: $('mObs'),
@@ -125,6 +126,7 @@
         el.fVolume.value = atual.volume;
         el.fDistancia.value = atual.distancia ?? '';
         el.btnAvancarLabel.textContent = etapa === ETAPAS.length ? 'Concluir' : 'Próxima etapa';
+        el.btnEtapaAnterior.style.display = etapa === 1 ? 'none' : '';
         clearStepErrors();
     }
 
@@ -163,9 +165,11 @@
     }
 
     function saveStepFields() {
-        atual.hospital = el.fHospital.value.trim();
-        atual.volume = Number(el.fVolume.value);
-        atual.distancia = el.fDistancia.value === '' ? null : Number(el.fDistancia.value);
+        /* Só sobrescreve com valores válidos (ao voltar/sair com campo vazio, mantém o que já estava salvo). */
+        if (el.fHospital.value.trim()) atual.hospital = el.fHospital.value.trim();
+        if (Number(el.fVolume.value) > 0) atual.volume = Number(el.fVolume.value);
+        if (el.fDistancia.value === '') atual.distancia = null;
+        else if (Number(el.fDistancia.value) >= 0) atual.distancia = Number(el.fDistancia.value);
     }
 
     el.stepForm.addEventListener('submit', (e) => {
@@ -187,15 +191,44 @@
         }
     });
 
-    el.btnVoltar.addEventListener('click', () => { atual = null; renderList(); showView('lista'); });
+    /* "Voltar para a lista": mantém a distribuição em andamento, sem perder a etapa atual. */
+    el.btnVoltar.addEventListener('click', () => {
+        if (atual && atual.status === 'andamento') { saveStepFields(); persistAtual(); }
+        atual = null; renderList(); showView('lista');
+    });
+
+    /* Etapa anterior: guarda o que foi digitado e volta um passo. */
+    el.btnEtapaAnterior.addEventListener('click', () => {
+        if (!atual || atual.etapa <= 1) return;
+        saveStepFields();
+        atual.etapa -= 1;
+        persistAtual();
+        renderStep();
+    });
+
+    /* Cancelar: pergunta antes. "Continuar depois" preserva o andamento; só o botão vermelho cancela de verdade. */
+    const closeCancelModal = () => { el.cancelModal.hidden = true; };
     el.btnCancelarFluxo.addEventListener('click', () => {
-        if (!confirm('Cancelar esta distribuição? Ela será marcada como cancelada.')) return;
+        el.cancelModal.hidden = false;
+        el.btnContinuarDepois.focus();
+    });
+    el.btnContinuarDepois.addEventListener('click', () => {
+        closeCancelModal();
+        saveStepFields();
+        persistAtual();
+        atual = null;
+        renderList();
+        showView('lista');
+    });
+    el.btnConfirmCancel.addEventListener('click', () => {
+        closeCancelModal();
         atual.status = 'cancelada';
         persistAtual();
         atual = null;
         renderList();
         showView('lista');
     });
+    el.cancelModal.addEventListener('click', (e) => { if (e.target === el.cancelModal) closeCancelModal(); });
     el.btnVoltarConcluida.addEventListener('click', () => { atual = null; renderList(); showView('lista'); });
 
     el.body.addEventListener('click', (e) => {
@@ -288,7 +321,9 @@
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !el.modal.hidden) closeModal();
+        if (e.key !== 'Escape') return;
+        if (!el.cancelModal.hidden) closeCancelModal();
+        else if (!el.modal.hidden) closeModal();
     });
 
     renderList();

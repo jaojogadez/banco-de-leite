@@ -27,7 +27,7 @@
         nascimento: $('inputNascimento'), inicio: $('inputInicio'), recebimento: $('inputRecebimento'),
         volume: $('inputVolume'), frascos: $('inputFrascos'), obs: $('inputObs'),
         erroDoadora: $('erroDoadora'), erroInicio: $('erroInicio'), erroRecebimento: $('erroRecebimento'),
-        erroVolume: $('erroVolume'), erroFrascos: $('erroFrascos'),
+        erroVolume: $('erroVolume'), erroFrascos: $('erroFrascos'), erroTipo: $('erroTipo'),
         delModal: $('deleteModal'), btnCancelDelete: $('btnCancelDelete'), btnConfirmDelete: $('btnConfirmDelete'),
     };
 
@@ -106,7 +106,7 @@
     }
 
     let coletas = load();
-    const state = { mode: 'create', editingId: null, tipoManual: false };
+    const state = { mode: 'create', editingId: null };
     let deletingId = null;
 
     /* ---------- Dropdown customizado ---------- */
@@ -188,7 +188,7 @@
     const selDoadora = createSelect($('selDoadora'));
     const selCondicao = createSelect($('selCondicao'), { pill: true });
     selCondicao.setItems(CONDICOES.map((c) => ({ value: c, label: c })));
-    const selTipo = createSelect($('selTipo'), { onChange: () => { state.tipoManual = true; } });
+    const selTipo = createSelect($('selTipo'), { onChange: () => { el.erroTipo.textContent = ''; } });
     selTipo.setItems(Object.entries(BADGES).map(([value, b]) => ({ value, label: b.label })));
 
     /* ---------- Render ---------- */
@@ -250,7 +250,6 @@
         selDoadora.setValue(c ? c.doadoraId : '');
         selCondicao.setValue(c ? c.condicao : '');
         selTipo.setValue(c ? (c.tipoLeite || classify(c) || '') : '');
-        state.tipoManual = Boolean(c && c.tipoLeite);
 
         el.nascimento.value = c ? c.nascimentoBebe : '';
         el.inicio.value = c ? c.inicioColeta : '';
@@ -270,7 +269,7 @@
     }
 
     function clearErrors() {
-        [el.erroDoadora, el.erroInicio, el.erroRecebimento, el.erroVolume, el.erroFrascos].forEach((s) => { s.textContent = ''; });
+        [el.erroDoadora, el.erroInicio, el.erroRecebimento, el.erroVolume, el.erroFrascos, el.erroTipo].forEach((s) => { s.textContent = ''; });
         el.form.querySelectorAll('.invalid').forEach((n) => n.classList.remove('invalid'));
     }
 
@@ -311,6 +310,11 @@
         if (!selDoadora.getValue()) {
             el.erroDoadora.textContent = 'Selecione a doadora.';
             selDoadora.trigger.classList.add('invalid');
+            ok = false;
+        }
+        if (!selTipo.getValue()) {
+            el.erroTipo.textContent = 'Selecione o tipo do leite.';
+            selTipo.trigger.classList.add('invalid');
             ok = false;
         }
         if (!(Number(el.volume.value) > 0)) {
@@ -387,14 +391,6 @@
     el.btnFechar.addEventListener('click', closeModal);
     el.btnCancelar.addEventListener('click', closeModal);
     el.modal.addEventListener('click', (e) => { if (e.target === el.modal) closeModal(); });
-    /* Sugere o tipo de leite pelas datas, enquanto a pessoa não escolher manualmente. */
-    function suggestTipo() {
-        if (state.mode === 'view' || state.tipoManual) return;
-        selTipo.setValue(autoTipo({
-            nascimentoBebe: el.nascimento.value, inicioColeta: el.inicio.value, dataRecebimento: el.recebimento.value,
-        }) || '');
-    }
-    [el.nascimento, el.inicio, el.recebimento].forEach((i) => i.addEventListener('change', suggestTipo));
 
     /* Exclusão */
     const closeDelete = () => { deletingId = null; el.delModal.hidden = true; };
